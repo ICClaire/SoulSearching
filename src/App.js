@@ -11,7 +11,7 @@ const App = () => {
   const [userId, setUserId] = useState(null);
   const [playlistId, setPlaylistId] = useState(null);
   const [recommendedTracks, setRecommendedTracks] = useState([]);
-
+  localStorage.setItem("userId1",userId)
 
   ///////////////////////////// useEffect Function /////////////////////////////
   //useEffect basically means run ONCE on render
@@ -29,11 +29,12 @@ const App = () => {
       localStorage.setItem('access_token1', accessToken1);
       localStorage.setItem('refresh_token1', refreshToken1);
       // window.location.hash = ''; 
+      console.log("1231231231MEowMEow");
 
       fetchUserData(accessToken1, refreshToken1);
-      fetchUserSavedTracks(accessToken1, refreshToken1);
-      fetchRecommendedTracks(accessToken1, refreshToken1);
-      createPlaylistWithRecommendations (accessToken1, refreshToken1);
+      fetchUserSavedTracks(accessToken1);
+      // fetchRecommendedTracks(accessToken1, refreshToken1);
+      // createPlaylistWithRecommendations (accessToken1, tracksUri,userId);
 
     } else  {
       localStorage.clear()
@@ -60,7 +61,7 @@ const App = () => {
       const data = await response.json();
       // setUserId = data.id;
       setUserData(data);
-      setUserId = (data.id);
+      setUserId(data.id);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -69,6 +70,7 @@ const App = () => {
 
   //// This fetches the user's top tracks
   const fetchUserSavedTracks = async(accessToken) =>{
+
     try{
       const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=5', {
         headers: {
@@ -88,7 +90,7 @@ const App = () => {
       // Need to get the id of the user's top tracks
       // the map method is used to get the id
       fetchRecommendedTracks(accessToken, data.items.map(track => track.id));
-      console.log(fetchRecommendedTracks);
+      // console.log(fetchRecommendedTracks);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -128,14 +130,19 @@ const App = () => {
 // Creating the spotify playlist
 
 const tracksUri = recommendedTracks.map(track => track.uri);
+//Array of reccomended tracks
 
-const createPlaylistWithRecommendations = async (accessToken, tracksUri, userId) => {
+const createPlaylistWithRecommendations = async () => {
   try {
-      const response = await fetch('https://api.spotify.com/v1/users/${userId}/playlists',
+    //local storage get for accesstoken because idk how to get from parameters
+      const accessToken1 = localStorage.getItem('access_token1');
+    
+      
+      const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`,
       {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ' + accessToken,
+          'Authorization': 'Bearer ' + accessToken1,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -144,31 +151,42 @@ const createPlaylistWithRecommendations = async (accessToken, tracksUri, userId)
           public: false
         })
       });
+      
       if (!response.ok) {
         throw new Error('Failed to create playlist');
+      }else {
+        const data = await response.json();
+        
+        const playlistID = data.id;
+        console.log('Playlist ID:', playlistID);
+        const tracksUri = recommendedTracks.map(track => track.uri);
+        const addTracks = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + accessToken1,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              uris: tracksUri
+            })
+          })
+          if (!addTracks.ok) {
+            throw new Error('Failed to add tracks to playlist');
+          };
+          console.log('Playlist created successfully');
+          console.log(createPlaylistWithRecommendations)
       }
 
-      const data = await response.json();
-      const newPlaylistId = data.id;
-      setPlaylistId(newPlaylistId);
 
-      const tracksUri = recommendedTracks.map(track => track.uri);
-      const addTracks = await fetch(`https://api.spotify.com/v1/playlists/${setPlaylistId}/tracks`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          uris: tracksUri
-        })
-      });
-      if (!addTracks.ok) {
-        throw new Error('Failed to add tracks to playlist');
-      }
-      console.log('Playlist created successfully');
-      console.log(createPlaylistWithRecommendations)
+      
+      // const data = await response.json();
+      // setPlaylistId(newPlaylistId);
+
+      
+      
+      
+      
     } catch (error) {
       console.error('Error creating playlist:', error);
     }
@@ -192,6 +210,11 @@ const createPlaylistWithRecommendations = async (accessToken, tracksUri, userId)
     setRecommendedTracks([]);
     window.location.href = 'http://localhost:3000'; // Redirect to the login page or home page
   };
+  const logUserIdAndToken = ()=>{
+    const accessToken1 = localStorage.getItem('access_token1');
+    console.log(accessToken1);
+    console.log(userId);
+  }
   
 
   

@@ -9,8 +9,8 @@ const request = require('request');
 //query string is needed for formatting url strings
 //requests makes life better for http requests
 
-const client_id = 'e097348e568243fe862de9cf3d2504b1'; 
-const client_secret = 'bf46ce6b7e70464996fb26f598bc81ca'; 
+const client_id = 'd02e33d6e43347a0baec0a32386de726'; 
+const client_secret = '5c5c56421ca149c4bc8aaff8dff4a6e9'; 
 const redirect_uri = 'http://localhost:3001/callback'; 
 
 //this is our sauce above, 
@@ -22,7 +22,7 @@ const app = express();// this is making our express aplication
 //purpose: This does the initial step of user AUTH with spotify. when user accesses /login, the server makes a random state and redirects the user to the spotify auth page.
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
-  const scope = 'user-read-private user-read-email user-library-read playlist-read-private user-top-read user-follow-read';
+  const scope = 'user-read-private user-read-email user-library-read playlist-read-private user-top-read user-follow-read playlist-modify-public playlist-modify-private';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
