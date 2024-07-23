@@ -9,8 +9,8 @@ const request = require('request');
 //query string is needed for formatting url strings
 //requests makes life better for http requests
 
-const client_id = 'd02e33d6e43347a0baec0a32386de726'; 
-const client_secret = '5c5c56421ca149c4bc8aaff8dff4a6e9'; 
+const client_id = 'e097348e568243fe862de9cf3d2504b1'; 
+const client_secret = 'bf46ce6b7e70464996fb26f598bc81ca'; 
 const redirect_uri = 'http://localhost:3001/callback'; 
 
 //this is our sauce above, 
