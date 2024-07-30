@@ -33,14 +33,14 @@ app.get('/login', (req, res) => {
       show_dialog: 'true'
     }));
 });
-//WHEN THE FUCKING HTTPS/LOCALHOST:3001' DOES THE LITTLE /LOGIN, WITH THE LINK IT RUNS THIS CODE, WHICH REDIRECTS THEM TO SPOTIFY AUTH PAGE, THEN THE REDIRECT URI SENDS THEM BACK TO THE FOLLOWING URI WHEN DONE .
+//WHEN THE HTTPS/LOCALHOST:3001' DOES THE LITTLE /LOGIN, WITH THE LINK IT RUNS THIS CODE, WHICH REDIRECTS THEM TO SPOTIFY AUTH PAGE, THEN THE REDIRECT URI SENDS THEM BACK TO THE FOLLOWING URI WHEN DONE .
 
 //Purpose: handes the callback from spotify after the user logs in. and exhanges the authcode for an access token, this access token is our api key then uses this access token to fetch user data.
 
 //so after the login where does the authcode come from?
 app.get('/callback', (req, res) => {
 
-  const code = req.query.code || null;//in the fucking url, it looks at the word {code} and parses through the url, to see what it equals too
+  const code = req.query.code || null;//in the url, it looks at the word {code} and parses through the url, to see what it equals too
   console.log("CODE= " ,code)
   console.log("\n")
 

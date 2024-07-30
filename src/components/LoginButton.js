@@ -8,7 +8,7 @@ const LoginButton = () => {
   
 
   return (
-    <button onClick={handleLogin}>Login with Spotify</button>
+    <button className=" font-sans font-semibold rounded-full bg-blue-600 w-40 h-10 text-white mt-96" onClick={handleLogin}>Login with Spotify</button>
   );
 };
 

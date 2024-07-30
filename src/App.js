@@ -22,6 +22,7 @@ const App = () => {
     console.log("CLEAR STORAGED", localStorage.getItem('access_token1'))
     
     const parsed = queryString.parse(window.location.search);
+    
     const accessToken1 = parsed.access_token1;
     const refreshToken1 = parsed.refresh_token1;
 
@@ -197,6 +198,14 @@ const createPlaylistWithRecommendations = async () => {
 
     console.log('successful');
   };
+
+ 
+  const refreshTracks = () => {
+    const accessToken1 = localStorage.getItem('access_token1');
+    if (accessToken1) {
+      fetchUserSavedTracks(accessToken1);
+    }
+  };
   
 
   ///////////////////////////// Handle Logout Function /////////////////////////////
@@ -247,8 +256,8 @@ const createPlaylistWithRecommendations = async () => {
                         {track.album.images && track.album.images[0] && (
                           <img className='w-full'src={track.album.images[0].url} alt="album cover" />
                         )}
-                        <h3 className='pt-3 pb-5 font-semibold '>{track.name}</h3>
-                        <p className='text-slate-300'>{track.artists.map(artist => artist.name)}</p>
+                        <h3 className='pt-3 pb-2 font-semibold '>{track.name}</h3>
+                        <p className='text-slate-400'>{track.artists.map(artist => artist.name)}</p>
                   </div>
                     ))}
                 </div>
@@ -256,19 +265,23 @@ const createPlaylistWithRecommendations = async () => {
               <div className='suggested-playlist w-2/5'>
                   
                 <h2 className='text-2xl font-sans font-semibold text-white pb-3 text-left'>Recommended Tracks</h2>
-                <div className='recommended-tracks flex flex-col flex-wrap justify-center align-middle bg-black bg-opacity-50 p-5 rounded-md'>
-                  <img className='bg-black' src='#' />
+                <div className='recommended-tracks flex flex-col justify-center align-middle bg-black bg-opacity-50 rounded-md'>
                   {recommendedTracks.map((track) => (
                     // <div key={track.id} className='bg-black bg-opacity-60 m-4 flex flex-wrap text-center p-4 rounded-md text-white'>
-                        <div key={track.id} className='bg-black bg-opacity-60 m-4 flex flex-row flex-wrap text-center p-4 rounded-md text-white'>
-                          <img src={track.album.images[1].url} />
+                        <div key={track.id} className='bg-black bg-opacity-60 m-4 flex flex-row  align-middle text-left p-2 rounded text-white'>
+                          <img className="w-12 h-12" src={track.album.images[1].url} />
                           {/* {track.album.images && track.album.images[1] && (
                             <img src={track.album.images[1].url} alt="album cover" />
                           )} */}
-                          <h3 clas>{track.name}</h3>
-                          <p>{track.artists.map(artist => artist.name)}</p>
+                          <div className='flex flex-col ml-5'>
+                            <h3 className='font-semibold pb-1 '>{track.name}</h3>
+                            <p className='text-slate-400'>{track.artists.map(artist => artist.name)}</p>
+                          </div>
                         </div>
                   ))}
+                   <button className='mt-4 p-2 bg-blue-600 text-white rounded' onClick={refreshTracks}>
+                    Refresh Tracks
+                  </button>
                    <button className='mt-4 p-2 bg-green-600 text-white rounded' onClick={handleCreatePlaylist}>
                     Create Playlist with Recommended Tracks
                   </button>
@@ -280,12 +293,8 @@ const createPlaylistWithRecommendations = async () => {
         )}
       </div>
       ) : (
-        <div>
-          <h1>LOGIN</h1>
+        <div className='flex justify-center content-center'>
           <LoginButton />
-          {/* <LogOut onClick={handleLogout}/> */}
-          <button onClick={handleLogout}>logout</button>
-          
         </div>
       )}
     </div>
